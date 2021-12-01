@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<Config>(new Config("configutarion"));
 
 var app = builder.Build();
 
@@ -16,7 +19,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/teams", () =>
+app.MapGet("/api/teams", ([FromServices] Config config) =>
 {
     var teams = new List<Team>
     {
@@ -34,4 +37,7 @@ app.MapGet("/api/teams", () =>
 app.Run();
 
 internal record Team(string name, string city, string country)
-{}
+{ }
+
+internal record Config(string Url)
+{ }
